@@ -1,1 +1,19 @@
-
+[
+  {
+    "title": "How TIPEZE Connects Skills with Opportunities",
+    "type": "video",
+    "url": "https://www.youtube.com/embed/dQw4w9WgXcQ",
+    "link": "https://example.com/about"
+  },
+  {
+    "title": "New Real Estate Listings in Lusaka",
+    "type": "image",
+    "url": "https://picsum.photos/seed/estatepromo/800/450",
+    "link": "https://example.com/real-estate"
+  },
+  {
+    "title": "Welcome to TIPEZE",
+    "type": "text",
+    "content": "We’re excited to launch TIPEZE — your trusted platform to find skilled professionals, transport providers, and properties."
+  }
+]
