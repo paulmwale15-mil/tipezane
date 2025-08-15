@@ -1,105 +1,68 @@
 import React, { useState, useEffect } from "react";
 
-export default function Home() {
-  // ====== DATA ARRAYS ======
+const Home = () => {
   const heroImages = [
     "/images/home-1.jpg",
     "/images/home-2.jpg",
     "/images/home-3.jpg"
   ];
+  const [current, setCurrent] = useState(0);
 
-  const categories = {
-    Skills: ["Plumbing", "Electrical", "Carpentry"],
-    Transport: ["Taxi", "Courier", "Truck Hire"],
-    "Real Estate": ["For Sale", "For Rent", "Land"]
-  };
-
-  const locations = ["Lusaka", "Ndola", "Kitwe", "Livingstone"];
-
-  // ====== STATE ======
-  const [currentImage, setCurrentImage] = useState(0);
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [subcategories, setSubcategories] = useState([]);
-
-  // ====== IMAGE SLIDESHOW ======
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentImage((prev) => (prev + 1) % heroImages.length);
-    }, 5000); // change every 5s
-    return () => clearInterval(interval);
+    const timer = setInterval(() => {
+      setCurrent((prev) => (prev + 1) % heroImages.length);
+    }, 5000);
+    return () => clearInterval(timer);
   }, [heroImages.length]);
 
-  // ====== HANDLE CATEGORY CHANGE ======
-  const handleCategoryChange = (e) => {
-    const category = e.target.value;
-    setSelectedCategory(category);
-    setSubcategories(categories[category] || []);
-  };
-
   return (
-    <div className="relative h-screen flex items-center justify-center">
-      {/* Background Slideshow */}
-      <div className="absolute inset-0">
-        {heroImages.map((img, index) => (
-          <img
-            key={index}
-            src={img}
-            alt={`Slide ${index}`}
-            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
-              index === currentImage ? "opacity-100" : "opacity-0"
-            }`}
-          />
-        ))}
-        <div className="absolute inset-0 bg-black/40" />
-      </div>
+    <div className="relative w-full h-screen overflow-hidden">
+      {/* Background slideshow */}
+      {heroImages.map((img, index) => (
+        <div
+          key={index}
+          className={`absolute inset-0 bg-cover bg-center transition-opacity duration-1000 ${
+            index === current ? "opacity-100" : "opacity-0"
+          }`}
+          style={{ backgroundImage: `url(${img})` }}
+        />
+      ))}
 
-      {/* Search Form */}
-      <div className="relative z-10 bg-white/90 rounded-lg p-6 shadow-lg w-11/12 max-w-2xl">
-        <h1 className="text-3xl font-bold text-center mb-4 text-blue-700">
+      {/* Overlay */}
+      <div className="absolute inset-0 bg-black/50 flex flex-col justify-center items-center text-center text-white px-4">
+        <h1 className="text-4xl md:text-6xl font-bold mb-4">TIPEZE</h1>
+        <p className="text-lg md:text-2xl italic mb-8">
           People need dreams – Dreams need people.
-        </h1>
+        </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {/* Location */}
-          <select className="p-3 rounded border border-gray-300">
-            <option value="">Select Location</option>
-            {locations.map((loc, idx) => (
-              <option key={idx} value={loc}>
-                {loc}
-              </option>
-            ))}
+        {/* Dropdowns */}
+        <div className="flex flex-col md:flex-row gap-4 mb-6 w-full max-w-2xl">
+          <select className="p-3 rounded-lg text-black w-full">
+            <option>Choose Location</option>
+            <option>Lusaka</option>
+            <option>Ndola</option>
+            <option>Kitwe</option>
           </select>
-
-          {/* Category */}
-          <select
-            className="p-3 rounded border border-gray-300"
-            onChange={handleCategoryChange}
-          >
-            <option value="">Select Category</option>
-            {Object.keys(categories).map((cat, idx) => (
-              <option key={idx} value={cat}>
-                {cat}
-              </option>
-            ))}
+          <select className="p-3 rounded-lg text-black w-full">
+            <option>Choose Service</option>
+            <option>Skills</option>
+            <option>Transport</option>
+            <option>Real Estate</option>
           </select>
-
-          {/* Subcategory */}
-          <select className="p-3 rounded border border-gray-300">
-            <option value="">Select Subcategory</option>
-            {subcategories.map((sub, idx) => (
-              <option key={idx} value={sub}>
-                {sub}
-              </option>
-            ))}
+          <select className="p-3 rounded-lg text-black w-full">
+            <option>Subcategory</option>
+            <option>Plumbing</option>
+            <option>Moving</option>
+            <option>Rentals</option>
           </select>
         </div>
 
-        <div className="mt-6 text-center">
-          <button className="px-6 py-3 bg-blue-700 text-white rounded-lg hover:bg-blue-800 transition">
-            Search
-          </button>
-        </div>
+        <button className="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold px-6 py-3 rounded-lg">
+          Search
+        </button>
       </div>
     </div>
   );
-}
+};
+
+export default Home;
