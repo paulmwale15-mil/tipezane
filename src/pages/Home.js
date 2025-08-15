@@ -1,51 +1,105 @@
-import React from "react";
-import { HERO_TAGLINE, HERO_SUBLINE, BG_HOME } from "../config";
-import { Briefcase, Truck, Home as HomeIcon } from "lucide-react";
-import { Link } from "react-router-dom";
-import BackgroundRotator from "../components/BackgroundRotator";
-import Newsletter from "../components/Newsletter";
+import React, { useState, useEffect } from "react";
 
 export default function Home() {
+  // ====== DATA ARRAYS ======
+  const heroImages = [
+    "/images/home-1.jpg",
+    "/images/home-2.jpg",
+    "/images/home-3.jpg"
+  ];
+
+  const categories = {
+    Skills: ["Plumbing", "Electrical", "Carpentry"],
+    Transport: ["Taxi", "Courier", "Truck Hire"],
+    "Real Estate": ["For Sale", "For Rent", "Land"]
+  };
+
+  const locations = ["Lusaka", "Ndola", "Kitwe", "Livingstone"];
+
+  // ====== STATE ======
+  const [currentImage, setCurrentImage] = useState(0);
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [subcategories, setSubcategories] = useState([]);
+
+  // ====== IMAGE SLIDESHOW ======
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImage((prev) => (prev + 1) % heroImages.length);
+    }, 5000); // change every 5s
+    return () => clearInterval(interval);
+  }, [heroImages.length]);
+
+  // ====== HANDLE CATEGORY CHANGE ======
+  const handleCategoryChange = (e) => {
+    const category = e.target.value;
+    setSelectedCategory(category);
+    setSubcategories(categories[category] || []);
+  };
+
   return (
-    <div>
-      {/* Hero */}
-      <div className="relative">
-        <BackgroundRotator images={BG_HOME} height="64vh" />
-        <div className="absolute inset-0 flex items-center">
-          <div className="max-w-7xl mx-auto px-4">
-            <h1 className="text-4xl md:text-6xl font-extrabold text-white drop-shadow-lg">
-              {HERO_TAGLINE}
-            </h1>
-            <p className="mt-4 text-white/90 text-lg md:text-xl">{HERO_SUBLINE}</p>
-            <a href="#services" className="inline-block mt-6 bg-orange-500 text-white px-6 py-3 rounded-lg shadow hover:bg-orange-600">
-              Get Started
-            </a>
-          </div>
-        </div>
+    <div className="relative h-screen flex items-center justify-center">
+      {/* Background Slideshow */}
+      <div className="absolute inset-0">
+        {heroImages.map((img, index) => (
+          <img
+            key={index}
+            src={img}
+            alt={`Slide ${index}`}
+            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
+              index === currentImage ? "opacity-100" : "opacity-0"
+            }`}
+          />
+        ))}
+        <div className="absolute inset-0 bg-black/40" />
       </div>
 
-      {/* Services */}
-      <section id="services" className="py-10 px-4 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
-        <ServiceCard to="/skills" icon={<Briefcase size={42} />} title="Skills" desc="Find trusted freelancers for every task." color="from-orange-500 to-amber-500" />
-        <ServiceCard to="/transport" icon={<Truck size={42} />} title="Transport" desc="Hire drivers, couriers, and logistics providers." color="from-yellow-500 to-lime-500" />
-        <ServiceCard to="/real-estate" icon={<HomeIcon size={42} />} title="Real Estate" desc="Browse properties for rent and sale." color="from-green-500 to-emerald-500" />
-      </section>
+      {/* Search Form */}
+      <div className="relative z-10 bg-white/90 rounded-lg p-6 shadow-lg w-11/12 max-w-2xl">
+        <h1 className="text-3xl font-bold text-center mb-4 text-blue-700">
+          People need dreams – Dreams need people.
+        </h1>
 
-      <Newsletter />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* Location */}
+          <select className="p-3 rounded border border-gray-300">
+            <option value="">Select Location</option>
+            {locations.map((loc, idx) => (
+              <option key={idx} value={loc}>
+                {loc}
+              </option>
+            ))}
+          </select>
+
+          {/* Category */}
+          <select
+            className="p-3 rounded border border-gray-300"
+            onChange={handleCategoryChange}
+          >
+            <option value="">Select Category</option>
+            {Object.keys(categories).map((cat, idx) => (
+              <option key={idx} value={cat}>
+                {cat}
+              </option>
+            ))}
+          </select>
+
+          {/* Subcategory */}
+          <select className="p-3 rounded border border-gray-300">
+            <option value="">Select Subcategory</option>
+            {subcategories.map((sub, idx) => (
+              <option key={idx} value={sub}>
+                {sub}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="mt-6 text-center">
+          <button className="px-6 py-3 bg-blue-700 text-white rounded-lg hover:bg-blue-800 transition">
+            Search
+          </button>
+        </div>
+      </div>
     </div>
-  );
-}
-
-function ServiceCard({ to, icon, title, desc, color }) {
-  return (
-    <Link to={to} className="group">
-      <div className={`p-6 rounded-2xl bg-gradient-to-br ${color} text-white shadow-lg transform transition hover:scale-[1.02]`}>
-        <div className="flex items-center gap-3">
-          <div className="p-3 bg-white/20 rounded-xl">{icon}</div>
-          <h3 className="text-xl font-bold">{title}</h3>
-        </div>
-        <p className="mt-3 text-white/90">{desc}</p>
-      </div>
-    </Link>
   );
 }
